@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Tarefas</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+        .tarefa { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding: 0.5rem 0; }
+        .concluida { text-decoration: line-through; color: #888; }
+        form { margin-bottom: 2rem; display: flex; gap: 0.5rem; }
+        input[type="text"] { flex-grow: 1; padding: 0.5rem; }
+        button { padding: 0.5rem 1rem; cursor: pointer; }
+        .acoes a { margin-left: 0.5rem; text-decoration: none; font-size: 0.9rem; }
+        .btn-excluir { color: red; }
+        .btn-concluir { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Minhas Tarefas</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="titulo" placeholder="Nova tarefa..." required>
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <div class="lista-tarefas">
+        {% for tarefa in tarefas %}
+            <div class="tarefa">
+                <span class="{% if tarefa.concluida %}concluida{% endif %}">
+                    {{ tarefa.titulo }}
+                </span>
+                <div class="acoes">
+                    <a href="{% url 'concluir_tarefa' tarefa.id %}" class="btn-concluir">
+                        {% if tarefa.concluida %}Reabrir{% else %}Concluir{% endif %}
+                    </a>
+                    <a href="{% url 'excluir_tarefa' tarefa.id %}" class="btn-excluir">Excluir</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhuma tarefa cadastrada.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
